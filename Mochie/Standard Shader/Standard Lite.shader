@@ -254,6 +254,17 @@ Shader "Mochie/Standard Lite" {
         _LTCGISpecularOcclusion("Apply Specular Occlusion", Float) = 0
         _LTCGI_DiffuseColor ("LTCGI Diffuse Color", Color) = (1,1,1,1)
         _LTCGI_SpecularColor ("LTCGI Specular Color", Color) = (1,1,1,1)
+
+        // CustomHalo
+        [Toggle(CustomHalo)]_CustomHalo("Custom Halo", Int) = 0
+        _CustomHaloPhaseSpread ("Spread", Float) = 0.0
+        _CustomHaloPhaseTex ("Phases", 2D) = "black" {}
+        _CustomHaloFrequencyScalar ("Scalar", Float) = 1.0
+        _CustomHaloFrequencySpread ("Spread", Float) = 0.0
+        _CustomHaloFrequencyTex ("Frequencies", 2D) = "black" {}
+        _CustomHaloHeightSpread ("Height", Float) = 1.0
+        _CustomHaloDisplacementScalar ("Displacement", Float) = 1.0
+        _CustomHaloAudioLinkScalar ("AudioLink", Range(0.0, 10.0)) = 0.0
         
         // Render Settings
         [Enum(UnityEngine.Rendering.CullMode)]_Culling("Cull", Int) = 2
