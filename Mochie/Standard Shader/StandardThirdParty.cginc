@@ -55,6 +55,49 @@ void InitializeAudioLink(inout audioLinkData al, float time){
 }
 
 //--------------
+// CustomHalo
+//--------------
+
+float _CustomHalo;
+Texture2D _CustomHaloPhaseTex;
+SamplerState sampler_CustomHaloPhaseTex;
+float _CustomHaloPhaseSpread;
+Texture2D _CustomHaloFrequencyTex;
+SamplerState sampler_CustomHaloFrequencyTex;
+float _CustomHaloFrequencyScalar;
+float _CustomHaloFrequencySpread;
+float _CustomHaloHeightSpread;
+float _CustomHaloDisplacementScalar;
+float _CustomHaloAudioLinkScalar;
+
+void CalculateCustomHalo(inout appdata v){
+    if (_CustomHalo > 0){
+        float _x = v.uv1.x - 0.5;
+        float _y = v.uv1.y - 0.5;
+        float r = sqrt(_x * _x + _y * _y);
+
+        _CustomHaloDisplacementScalar *= r/100.0;
+        if (r > 0.0001) {
+            // float alpressure = AudioLinkData( ALPASS_AUDIOLINK + int2( 0, 1 ) ).x;
+            audioLinkData al = (audioLinkData)0;
+            InitializeAudioLink(al, 0);
+            float alpressure = GetAudioLinkBand(al, 2);
+
+            float  theta      =  atan2(_y, _x);
+            float4 phase      =  MOCHIE_SAMPLE_TEX2D_LOD(_CustomHaloPhaseTex, v.uv1.xy, 0) * 3.141592 * _CustomHaloPhaseSpread;
+
+            float4 baseFreq   =  MOCHIE_SAMPLE_TEX2D_LOD(_CustomHaloFrequencyTex, v.uv1.xy, 0);
+            float4 frequency  =  _CustomHaloFrequencyScalar * (baseFreq * (1.0 + (_CustomHaloFrequencySpread * (baseFreq - 0.5))));
+            float  _tangent   =  _CustomHaloDisplacementScalar * sin(frequency.x * _Time.y + phase.x);
+
+            v.vertex.x += _tangent * cos(theta);
+            v.vertex.y += _tangent * sin(theta);
+            v.vertex.z += _CustomHaloDisplacementScalar * _CustomHaloHeightSpread * sin(frequency.z * _Time.y + phase.z + sin(_CustomHaloAudioLinkScalar * alpressure / 2.0));
+        }
+    }
+}
+
+//--------------
 // LTCGI
 //--------------
 
