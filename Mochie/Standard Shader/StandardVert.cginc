@@ -10,6 +10,10 @@ v2f vert (appdata v){
     UNITY_SETUP_INSTANCE_ID(v);
     UNITY_TRANSFER_INSTANCE_ID(v, o);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+
+    #if !defined(META_PASS)
+        CalculateCustomHalo(v);
+    #endif
     
     #if defined(META_PASS)
         o.pos = UnityMetaVertexPosition(v.vertex, v.uv1.xy, v.uv2.xy, unity_LightmapST, unity_DynamicLightmapST);
