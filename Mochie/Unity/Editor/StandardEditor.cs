@@ -20,6 +20,7 @@ namespace Mochie {
             "AreaLit",
             "LTCGI",
             "Lightmap Settings",
+            "Custom Halo",
             "Debug"
         }, 1);
 
@@ -260,6 +261,17 @@ namespace Mochie {
         MaterialProperty _LTCGI_DiffuseColor = null;
         MaterialProperty _LTCGI_SpecularColor = null;
 
+        // CustomHalo
+        MaterialProperty _CustomHalo = null;
+        MaterialProperty _CustomHaloPhaseTex = null;
+        MaterialProperty _CustomHaloPhaseSpread = null;
+        MaterialProperty _CustomHaloFrequencyTex = null;
+        MaterialProperty _CustomHaloFrequencyScalar = null;
+        MaterialProperty _CustomHaloFrequencySpread = null;
+        MaterialProperty _CustomHaloHeightSpread = null;
+        MaterialProperty _CustomHaloDisplacementScalar = null;
+        MaterialProperty _CustomHaloAudioLinkScalar = null;
+
         // Render Settings
         MaterialProperty _Culling = null;
         MaterialProperty _QueueOffset = null;
@@ -345,6 +357,7 @@ namespace Mochie {
                 DoAreaLit(mat);
                 DoLTCGI(mat);
                 DoLightmapSettings(mat);
+                DoCustomHalo(mat);
                 DoRenderSettings(mat);
                 DoDebug(mat);
             }
@@ -1012,6 +1025,30 @@ namespace Mochie {
                             MGUI.DisplayWarning("Please note that due to lightmaps being atlased, manipulating their uvs often reveals visual artifacts, and is often not recommended. Be sure to check for artifacts if using this option.");
                         }
                     }
+                });
+                MGUI.Space6();
+            }
+        }
+
+        void DoCustomHalo(Material mat){
+            if (Foldouts.DoSmallFoldoutBold(foldouts, mat, me, "Custom Halo")){
+                MGUI.PropertyGroup(()=>{
+                    me.ShaderProperty(_CustomHalo, "Enable");
+                    MGUI.ToggleGroup(_CustomHalo.floatValue == 0);
+                    MGUI.PropertyGroup(()=>{
+                        me.TexturePropertySingleLine(Tips.customHaloPhase, _CustomHaloPhaseTex, _CustomHaloPhaseSpread);
+                    });
+                    MGUI.PropertyGroup(()=>{
+                        me.ShaderProperty(_CustomHaloFrequencyScalar, "Frequency Scale");
+                        me.TexturePropertySingleLine(Tips.customHaloFrequency, _CustomHaloFrequencyTex, _CustomHaloFrequencySpread);
+                    });
+                    MGUI.PropertyGroup(()=>{
+                        me.ShaderProperty(_CustomHaloHeightSpread, "Height Spread");
+                        me.ShaderProperty(_CustomHaloDisplacementScalar, "Displacement Scalar");
+                        me.ShaderProperty(_CustomHaloAudioLinkScalar, "AudioLink");
+                    });
+                    MGUI.ToggleGroupEnd();
+                    MGUI.SpaceN2();
                 });
                 MGUI.Space6();
             }
